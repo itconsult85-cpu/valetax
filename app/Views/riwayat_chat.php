@@ -3,26 +3,7 @@
     'heading' => 'Riwayat Chat - Circle Republic Trader',
     'activeMenu' => '',
 ]) ?>
-
-<nav class="navbar navbar-expand-lg navbar-white bg-white border-bottom py-3">
-        <div class="container">
-            <a class="navbar-brand text-primary fw-bold" href="#"><i class="bi bi-robot me-2"></i>Circle Republic Trader BOT</a>
-            <div class="d-flex align-items-center gap-3">
-                <ul class="navbar-nav flex-row gap-3">
-                    <li class="nav-item"><a class="nav-link" href="<?= site_url('AdminDashboard') ?>">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= site_url('BotSettings') ?>">Pengaturan Bot</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= site_url('BotAutoRespon') ?>">Auto-Respon</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="<?= site_url('ChatHistory') ?>">Riwayat Chat</a></li>
-                </ul>
-                <div class="vr"></div>
-                <a href="<?= site_url('auth/logout') ?>" class="btn btn-sm btn-outline-danger rounded-pill px-3">
-                    <i class="bi bi-box-arrow-right me-1"></i> Logout
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container py-4 flex-grow-1 d-flex flex-column h-100">
+<div class="container py-4 flex-grow-1 d-flex flex-column h-100">
         <div class="mb-3">
             <h4 class="fw-bold tracking-tight mb-1">Monitoring Riwayat Chat</h4>
             <p class="text-muted small">Pantau percakapan bot dengan pengguna secara real-time untuk mendeteksi error respon.</p>
