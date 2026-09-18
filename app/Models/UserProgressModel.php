@@ -17,18 +17,24 @@ class UserProgressModel extends Model
         'screenshots_sent',
         'started_at',
         'completed_at',
+        'admin_notified_at',
+        'admin_forwarded_at',
+        'admin_sent_at',
+        'admin_message_id',
+        'admin_forward_message_id',
         'last_active',
     ];
 
     /**
      * Bot lama menandai pendaftaran selesai saat bukti screenshot diterima,
      * sehingga current_step historis tidak selalu bernilai 6. Sumber status
-     * selesai yang konsisten adalah completed_at + minimal satu screenshot.
+     * selesai yang terverifikasi adalah completed_at + screenshot + admin_sent_at.
      */
     public function getJoinedUsers(): array
     {
         return $this->where('completed_at IS NOT NULL', null, false)
             ->where('screenshots_sent >=', 1)
+            ->where('admin_sent_at IS NOT NULL', null, false)
             ->orderBy('completed_at', 'DESC')
             ->orderBy('last_active', 'DESC')
             ->findAll();
@@ -38,6 +44,7 @@ class UserProgressModel extends Model
     {
         return $this->where('completed_at IS NOT NULL', null, false)
             ->where('screenshots_sent >=', 1)
+            ->where('admin_sent_at IS NOT NULL', null, false)
             ->countAllResults();
     }
 

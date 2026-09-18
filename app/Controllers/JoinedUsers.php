@@ -31,6 +31,7 @@ class JoinedUsers extends BaseController
             'Screenshot Diterima',
             'Mulai Daftar',
             'Selesai Daftar',
+            'Dikirim ke Admin',
             'Aktif Terakhir',
         ]);
 
@@ -44,6 +45,7 @@ class JoinedUsers extends BaseController
                 (int) ($user['screenshots_sent'] ?? 0),
                 $user['started_at'] ?? '',
                 $user['completed_at'] ?? '',
+                $user['admin_sent_at'] ?? '',
                 $user['last_active'] ?? '',
             ]);
         }
