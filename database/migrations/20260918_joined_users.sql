@@ -3,7 +3,8 @@
 -- Tidak menghapus kolom/baris dan dapat dijalankan ulang.
 
 -- Sinkronkan timestamp selesai yang masih kosong pada data lama yang sudah
--- mencapai progress terakhir.
+-- mencapai progress terakhir versi alur baru. Data historis yang sudah
+-- memiliki completed_at tetap dipertahankan apa adanya.
 UPDATE `user_progress`
 SET `completed_at` = COALESCE(`completed_at`, `last_active`, `started_at`, CURRENT_TIMESTAMP)
 WHERE `current_step` >= 6
@@ -36,5 +37,6 @@ END$$
 DELIMITER ;
 
 -- Catatan integrasi bot:
--- Proses bot tetap boleh melakukan INSERT/UPDATE seperti sebelumnya. Query
--- aplikasi memakai current_step >= 6 sebagai sumber kebenaran status selesai.
+-- Pada data historis, completed_at + screenshots_sent >= 1 adalah indikator
+-- selesai. Untuk alur bot baru, current_step = 6 juga dipakai sebagai status
+-- final dan trigger di atas membantu mengisi completed_at secara otomatis.

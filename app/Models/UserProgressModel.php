@@ -21,14 +21,14 @@ class UserProgressModel extends Model
     ];
 
     /**
-     * Pendaftaran dianggap selesai saat bot mencapai langkah terakhir (6).
-     * completed_at tetap diterima sebagai informasi historis, tetapi tidak
-     * dipakai sendiri agar user yang belum mencapai langkah terakhir tidak
-     * masuk ke daftar anggota.
+     * Bot lama menandai pendaftaran selesai saat bukti screenshot diterima,
+     * sehingga current_step historis tidak selalu bernilai 6. Sumber status
+     * selesai yang konsisten adalah completed_at + minimal satu screenshot.
      */
     public function getJoinedUsers(): array
     {
-        return $this->where('current_step >=', 6)
+        return $this->where('completed_at IS NOT NULL', null, false)
+            ->where('screenshots_sent >=', 1)
             ->orderBy('completed_at', 'DESC')
             ->orderBy('last_active', 'DESC')
             ->findAll();
@@ -36,7 +36,9 @@ class UserProgressModel extends Model
 
     public function countJoinedUsers(): int
     {
-        return $this->where('current_step >=', 6)->countAllResults();
+        return $this->where('completed_at IS NOT NULL', null, false)
+            ->where('screenshots_sent >=', 1)
+            ->countAllResults();
     }
 
     /**
