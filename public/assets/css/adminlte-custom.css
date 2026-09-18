@@ -1,0 +1,7 @@
+body { background: #f4f6f9; }
+.app-content { min-height: calc(100vh - 124px); }
+.brand-mark { width: 2.25rem; height: 2.25rem; display: inline-grid; place-items: center; border-radius: .65rem; }
+.table thead th { white-space: nowrap; font-size: .78rem; letter-spacing: .02em; text-transform: uppercase; }
+.table td { vertical-align: middle; white-space: nowrap; }
+.table-responsive { min-height: 260px; }
+.card { border-radius: .75rem; }

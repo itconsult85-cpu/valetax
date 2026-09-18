@@ -6,6 +6,8 @@ use CodeIgniter\Model;
 
 class UserProgressModel extends Model
 {
+    private ?bool $hasAdminDeliveryColumns = null;
+
     protected $table      = 'user_progress';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
@@ -32,9 +34,14 @@ class UserProgressModel extends Model
      */
     public function getJoinedUsers(): array
     {
-        return $this->where('completed_at IS NOT NULL', null, false)
-            ->where('screenshots_sent >=', 1)
-            ->where('admin_sent_at IS NOT NULL', null, false)
+        $builder = $this->where('completed_at IS NOT NULL', null, false)
+            ->where('screenshots_sent >=', 1);
+
+        if ($this->hasAdminDeliveryColumns()) {
+            $builder->where('admin_sent_at IS NOT NULL', null, false);
+        }
+
+        return $builder
             ->orderBy('completed_at', 'DESC')
             ->orderBy('last_active', 'DESC')
             ->findAll();
@@ -42,10 +49,29 @@ class UserProgressModel extends Model
 
     public function countJoinedUsers(): int
     {
-        return $this->where('completed_at IS NOT NULL', null, false)
-            ->where('screenshots_sent >=', 1)
-            ->where('admin_sent_at IS NOT NULL', null, false)
-            ->countAllResults();
+        $builder = $this->where('completed_at IS NOT NULL', null, false)
+            ->where('screenshots_sent >=', 1);
+
+        if ($this->hasAdminDeliveryColumns()) {
+            $builder->where('admin_sent_at IS NOT NULL', null, false);
+        }
+
+        return $builder->countAllResults();
+    }
+
+    private function hasAdminDeliveryColumns(): bool
+    {
+        if ($this->hasAdminDeliveryColumns !== null) {
+            return $this->hasAdminDeliveryColumns;
+        }
+
+        try {
+            $this->hasAdminDeliveryColumns = $this->db->fieldExists('admin_sent_at', $this->table);
+        } catch (\Throwable) {
+            $this->hasAdminDeliveryColumns = false;
+        }
+
+        return $this->hasAdminDeliveryColumns;
     }
 
     /**
