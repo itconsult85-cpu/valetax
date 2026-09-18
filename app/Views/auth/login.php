@@ -6,7 +6,7 @@
     <title>Login | Circle Republic Trader</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0-rc.7/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/adminlte4@4.0.0-rc.7.20260519/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="<?= base_url('assets/css/adminlte-custom.css') ?>">
 </head>
 <body class="login-page bg-body-tertiary">
@@ -27,7 +27,7 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0-rc.7/dist/js/adminlte.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/adminlte4@4.0.0-rc.7.20260519/dist/js/adminlte.min.js"></script>
 <script src="<?= base_url('assets/js/adminlte-app.js') ?>"></script>
 </body>
 </html>
