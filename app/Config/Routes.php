@@ -16,6 +16,8 @@ $routes->get('auth/logout', 'Auth::logout');
 $routes->get('AdminDashboard', 'AdminDashboard::index', ['filter' => 'authFilter']);
 $routes->get('AdminDashboard/botControl/(:segment)', 'AdminDashboard::botControl/$1', ['filter' => 'authFilter']);
 $routes->get('AdminDashboard', 'AdminDashboard::index', ['filter' => 'authFilter']);
+$routes->get('JoinedUsers', 'JoinedUsers::index', ['filter' => 'authFilter']);
+$routes->get('JoinedUsers/download', 'JoinedUsers::download', ['filter' => 'authFilter']);
 $routes->post('AdminDashboard/tambahUser', 'AdminDashboard::tambahUser', ['filter' => 'authFilter']);
 $routes->get('AdminDashboard/botControl/(:segment)', 'AdminDashboard::botControl/$1', ['filter' => 'authFilter']);
 $routes->post('AdminDashboard/gantiPassword', 'AdminDashboard::gantiPassword', ['filter' => 'authFilter']);

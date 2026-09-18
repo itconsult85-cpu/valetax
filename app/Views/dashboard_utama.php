@@ -67,6 +67,7 @@
             <div class="d-flex align-items-center gap-3">
                 <ul class="navbar-nav flex-row gap-3">
                     <li class="nav-item"><a class="nav-link active" href="<?= site_url('AdminDashboard') ?>">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= site_url('JoinedUsers') ?>"><i class="bi bi-people-fill me-1"></i>Anggota Bergabung</a></li>
 
                     <?php if ($isAdmin): ?>
                         <li class="nav-item"><a class="nav-link" href="<?= site_url('BotSettings') ?>">Pengaturan Bot</a></li>
