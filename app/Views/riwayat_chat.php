@@ -3,13 +3,13 @@
     'heading' => 'Riwayat Chat - Circle Republic Trader',
     'activeMenu' => '',
 ]) ?>
-<div class="container py-4 flex-grow-1 d-flex flex-column h-100">
+<div id="chat-history-page" class="container py-3 flex-grow-1 d-flex flex-column" data-detail-url="<?= site_url('ChatHistory/getDetailChat/') ?>">
         <div class="mb-3">
             <h4 class="fw-bold tracking-tight mb-1">Monitoring Riwayat Chat</h4>
             <p class="text-muted small">Pantau percakapan bot dengan pengguna secara real-time untuk mendeteksi error respon.</p>
         </div>
 
-        <div class="chat-container">
+        <div class="chat-container chat-container-compact">
             <div class="user-list">
                 <div class="p-3 bg-white border-bottom sticky-top">
                     <h6 class="fw-bold mb-0 text-muted"><i class="bi bi-people-fill me-2"></i>Daftar Chat</h6>

@@ -1,47 +1,3 @@
-/* dashboard_utama.php */
-
-        const NODE_API_URL = "http://202.10.34.128:3001/api/bot-status";
-
-        function checkBotStatus() {
-            fetch(NODE_API_URL)
-                .then(res => res.json())
-                .then(data => {
-                    const wrapper = document.getElementById('qrCodeWrapper');
-                    if (data.status === "Waiting for Scan") {
-                        wrapper.innerHTML = `<canvas id="qrCanvas"></canvas><p class="text-warning mt-2 fw-semibold">Harap Scan QR Code</p>`;
-                        QRCode.toCanvas(document.getElementById('qrCanvas'), data.qr, {
-                            width: 200,
-                            margin: 2,
-                            color: {
-                                dark: '#0f172a',
-                                light: '#ffffff'
-                            }
-                        });
-                    } else if (data.status === "Connected") {
-                        wrapper.innerHTML = `<div class="text-success py-3"><i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i><h5 class="mt-3 fw-bold">Bot Terhubung & Aktif</h5></div>`;
-                    } else {
-                        wrapper.innerHTML = `<p class="text-danger fw-semibold"><i class="bi bi-arrow-repeat spin"></i> Bot Terputus / Loading...</p>`;
-                    }
-                })
-                .catch(() => {
-                    document.getElementById('qrCodeWrapper').innerHTML = `<p class="text-danger py-3"><i class="bi bi-x-circle fs-1 mb-2 d-block"></i>Gagal konek ke Server Bot (Node.js)</p>`;
-                });
-        }
-
-        setInterval(checkBotStatus, 3000);
-        checkBotStatus();
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const alerts = document.querySelectorAll('.alert-dismissible');
-            alerts.forEach(function(alertNode) {
-                setTimeout(function() {
-                    const alert = new bootstrap.Alert(alertNode);
-                    alert.close();
-                }, 3000);
-            });
-        });
-    
-
 /* bot_settings.php */
 
         document.querySelectorAll('.btn-edit-state').forEach(btn => {
@@ -151,53 +107,6 @@
                 }, 3000);
             });
         });
-    
-
-/* riwayat_chat.php */
-
-        function loadChat(element) {
-            document.querySelectorAll('.user-item').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-
-            const phone = element.getAttribute('data-phone');
-            const name = element.getAttribute('data-name');
-            const chatHistoryBox = document.getElementById('chatHistory');
-
-            document.getElementById('activeChatName').innerText = name;
-            document.getElementById('activeChatPhone').innerText = phone;
-
-            chatHistoryBox.innerHTML = '<div class="text-center mt-5"><div class="spinner-border text-primary" role="status"></div><p class="text-muted mt-2">Memuat percakapan...</p></div>';
-
-            // Memanggil endpoint dari Controller baru
-            fetch(`<?= site_url('ChatHistory/getDetailChat/') ?>${phone}`)
-                .then(response => response.json())
-                .then(data => {
-                    chatHistoryBox.innerHTML = '';
-
-                    if (data.length === 0) {
-                        chatHistoryBox.innerHTML = '<div class="text-center mt-5 text-muted">Data chat kosong.</div>';
-                        return;
-                    }
-
-                    data.forEach(chat => {
-                        const bubble = document.createElement('div');
-                        if (chat.sender === 'bot') {
-                            bubble.className = 'bubble bubble-bot';
-                        } else {
-                            bubble.className = 'bubble bubble-user';
-                        }
-
-                        bubble.innerHTML = chat.message;
-                        chatHistoryBox.appendChild(bubble);
-                    });
-
-                    chatHistoryBox.scrollTop = chatHistoryBox.scrollHeight;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    chatHistoryBox.innerHTML = '<div class="text-center mt-5 text-danger">Gagal memuat percakapan.</div>';
-                });
-        }
     
 
 /* settings_view.php */

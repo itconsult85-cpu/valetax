@@ -65,10 +65,13 @@
             </div>
 
             <div class="col-md-6">
-                <div class="card p-4 shadow-sm border-0 text-center">
-                    <h5 class="fw-bold mb-4">Status WhatsApp</h5>
-                    <div id="qrCodeWrapper">
-                        <p class="text-muted">Menunggu sinkronisasi status...</p>
+                <div class="card p-4 shadow-sm border-0">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0">Status Bot Telegram</h5>
+                        <span class="badge text-bg-light">PM2 monitor</span>
+                    </div>
+                    <div id="telegram-bot-status" data-url="<?= site_url('AdminDashboard/getBotStatus') ?>">
+                        <p class="text-muted mb-0">Memeriksa status proses bot...</p>
                     </div>
                 </div>
             </div>

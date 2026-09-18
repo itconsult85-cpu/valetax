@@ -12,8 +12,27 @@ class JoinedUsers extends BaseController
         $model = new UserProgressModel();
 
         return view('joined_users', [
-            'users' => $model->getJoinedUsers(),
             'total' => $model->countJoinedUsers(),
+        ]);
+    }
+
+    public function data()
+    {
+        $request = $this->request;
+        $model = new UserProgressModel();
+        $columns = ['id', 'user_name', 'phone_number', 'current_step', 'screenshots_sent', 'started_at', 'completed_at', 'admin_sent_at', 'last_active'];
+        $orderIndex = (int) ($request->getGet('order')[0]['column'] ?? 6);
+        $orderColumn = $columns[$orderIndex] ?? 'completed_at';
+        $orderDir = strtolower((string) ($request->getGet('order')[0]['dir'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
+        $start = max(0, (int) ($request->getGet('start') ?? 0));
+        $length = min(100, max(10, (int) ($request->getGet('length') ?? 10)));
+        $search = trim((string) ($request->getGet('search')['value'] ?? ''));
+
+        return $this->response->setJSON([
+            'draw' => (int) ($request->getGet('draw') ?? 0),
+            'recordsTotal' => $model->countJoinedUsers(),
+            'recordsFiltered' => $model->countJoinedUsers($search),
+            'data' => $model->getJoinedUsersPage($start, $length, $search, $orderColumn, $orderDir),
         ]);
     }
 

@@ -14,9 +14,11 @@ $routes->get('auth/logout', 'Auth::logout');
 // RUTE TERLINDUNGI (Wajib Login)
 // ==========================================
 $routes->get('AdminDashboard', 'AdminDashboard::index', ['filter' => 'authFilter']);
+$routes->get('AdminDashboard/getBotStatus', 'AdminDashboard::getBotStatus', ['filter' => 'authFilter']);
 $routes->get('AdminDashboard/botControl/(:segment)', 'AdminDashboard::botControl/$1', ['filter' => 'authFilter']);
 $routes->get('AdminDashboard', 'AdminDashboard::index', ['filter' => 'authFilter']);
 $routes->get('JoinedUsers', 'JoinedUsers::index', ['filter' => 'authFilter']);
+$routes->get('JoinedUsers/data', 'JoinedUsers::data', ['filter' => 'authFilter']);
 $routes->get('JoinedUsers/download', 'JoinedUsers::download', ['filter' => 'authFilter']);
 $routes->post('AdminDashboard/tambahUser', 'AdminDashboard::tambahUser', ['filter' => 'authFilter']);
 $routes->get('AdminDashboard/botControl/(:segment)', 'AdminDashboard::botControl/$1', ['filter' => 'authFilter']);

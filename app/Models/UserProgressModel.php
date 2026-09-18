@@ -34,8 +34,7 @@ class UserProgressModel extends Model
      */
     public function getJoinedUsers(): array
     {
-        $builder = $this->where('completed_at IS NOT NULL', null, false)
-            ->where('screenshots_sent >=', 1);
+        $builder = $this->joinedBuilder();
 
         if ($this->hasAdminDeliveryColumns()) {
             $builder->where('admin_sent_at IS NOT NULL', null, false);
@@ -47,15 +46,50 @@ class UserProgressModel extends Model
             ->findAll();
     }
 
-    public function countJoinedUsers(): int
+    public function getJoinedUsersPage(int $start, int $length, string $search = '', string $order = 'completed_at', string $direction = 'desc'): array
     {
-        $builder = $this->where('completed_at IS NOT NULL', null, false)
-            ->where('screenshots_sent >=', 1);
+        $allowed = ['id', 'user_name', 'phone_number', 'current_step', 'screenshots_sent', 'started_at', 'completed_at', 'admin_sent_at', 'last_active'];
+        $order = in_array($order, $allowed, true) ? $order : 'completed_at';
+        $direction = $direction === 'asc' ? 'asc' : 'desc';
+        $builder = $this->joinedBuilder();
+        $this->applySearch($builder, $search);
+        return $builder->orderBy($order, $direction)->limit($length, $start)->get()->getResultArray();
+    }
 
+    public function countJoinedUsers(string $search = ''): int
+    {
+        $builder = $this->joinedBuilder();
+        $this->applySearch($builder, $search);
+        return $builder->countAllResults();
+    }
+
+    private function joinedBuilder()
+    {
+        $builder = $this->db->table($this->table)
+            ->where('completed_at IS NOT NULL', null, false)
+            ->where('screenshots_sent >=', 1);
         if ($this->hasAdminDeliveryColumns()) {
             $builder->where('admin_sent_at IS NOT NULL', null, false);
         }
+        return $builder;
+    }
 
+    private function applySearch($builder, string $search): void
+    {
+        if ($search === '') return;
+        $builder->groupStart()
+            ->like('user_name', $search)
+            ->orLike('user_id', $search)
+            ->orLike('phone_number', $search)
+            ->groupEnd();
+    }
+
+    /*
+     * Kept for existing callers; the query now uses the shared builder.
+     */
+    public function countJoinedUsersLegacy(): int
+    {
+        $builder = $this->joinedBuilder();
         return $builder->countAllResults();
     }
 
