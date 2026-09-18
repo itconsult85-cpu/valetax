@@ -21,42 +21,33 @@ class JoinedUsers extends BaseController
         $model = new UserProgressModel();
         $users = $model->getJoinedUsers();
 
-        $handle = fopen('php://temp', 'r+');
-        fputcsv($handle, [
-            'No',
-            'ID User',
-            'Nama',
-            'Nomor Telepon',
-            'Progress',
-            'Screenshot Diterima',
-            'Mulai Daftar',
-            'Selesai Daftar',
-            'Dikirim ke Admin',
-            'Aktif Terakhir',
-        ]);
-
+        $escape = static fn ($value): string => htmlspecialchars((string) ($value ?? ''), ENT_QUOTES, 'UTF-8');
+        $rows = '';
         foreach ($users as $index => $user) {
-            fputcsv($handle, [
-                $index + 1,
-                $user['user_id'] ?? '',
-                $user['user_name'] ?? '',
-                $user['phone_number'] ?? '',
-                (int) ($user['current_step'] ?? 0),
-                (int) ($user['screenshots_sent'] ?? 0),
-                $user['started_at'] ?? '',
-                $user['completed_at'] ?? '',
-                $user['admin_sent_at'] ?? '',
-                $user['last_active'] ?? '',
-            ]);
+            $rows .= '<tr>'
+                . '<td>' . ($index + 1) . '</td>'
+                . '<td style="mso-number-format:\\@">' . $escape($user['user_id'] ?? '') . '</td>'
+                . '<td>' . $escape($user['user_name'] ?? '') . '</td>'
+                . '<td style="mso-number-format:\\@">' . $escape($user['phone_number'] ?? '') . '</td>'
+                . '<td>' . (int) ($user['current_step'] ?? 0) . '</td>'
+                . '<td>' . (int) ($user['screenshots_sent'] ?? 0) . '</td>'
+                . '<td>' . $escape($user['started_at'] ?? '') . '</td>'
+                . '<td>' . $escape($user['completed_at'] ?? '') . '</td>'
+                . '<td>' . $escape($user['admin_sent_at'] ?? '') . '</td>'
+                . '<td>' . $escape($user['last_active'] ?? '') . '</td>'
+                . '</tr>';
         }
 
-        rewind($handle);
-        $csv = "\xEF\xBB\xBF" . stream_get_contents($handle);
-        fclose($handle);
+        $excel = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+            . '<style>body{font-family:Calibri,Arial,sans-serif}table{border-collapse:collapse}th,td{border:1px solid #b7c3d0;padding:7px 9px;white-space:nowrap}th{background:#0d6efd;color:#fff;font-weight:bold;text-align:center}caption{font-size:16px;font-weight:bold;text-align:left;padding:10px 0}</style>'
+            . '</head><body><table><caption>Datasheet Anggota Bergabung</caption><thead><tr>'
+            . '<th>No</th><th>ID Telegram</th><th>Nama</th><th>Nomor Telepon</th><th>Progress</th><th>Screenshot</th><th>Mulai Daftar</th><th>Selesai Daftar</th><th>Dikirim ke Admin</th><th>Aktif Terakhir</th>'
+            . '</tr></thead><tbody>' . $rows . '</tbody></table></body></html>';
 
         return $this->response
-            ->download('datasheet-anggota-bergabung-' . date('Y-m-d') . '.csv', $csv)
-            ->setContentType('text/csv; charset=UTF-8');
+            ->setHeader('Content-Type', 'application/vnd.ms-excel; charset=UTF-8')
+            ->setHeader('Content-Disposition', 'attachment; filename="datasheet-anggota-bergabung-' . date('Y-m-d') . '.xls"')
+            ->setBody("\xEF\xBB\xBF" . $excel);
     }
 }
 

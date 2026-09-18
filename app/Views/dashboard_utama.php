@@ -1,61 +1,10 @@
-<!DOCTYPE html>
-<html lang="id">
+<?= $this->include('layouts/adminlte_header', [
+    'title' => 'Dashboard Utama - Circle Republic Trader',
+    'heading' => 'Dashboard Utama - Circle Republic Trader',
+    'activeMenu' => '',
+]) ?>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard Utama - Circle Republic Trader</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <style>
-        body {
-            background: #f8fafc;
-            font-family: 'Inter', system-ui, sans-serif;
-            color: #0f172a;
-        }
-
-        .nav-link {
-            color: #64748b;
-        }
-
-        .nav-link.active {
-            color: #0d6efd !important;
-            font-weight: 600;
-        }
-
-        .metric-card,
-        .data-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            background: #ffffff;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .metric-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.04);
-        }
-
-        .data-card:hover {
-            transform: translateX(4px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.03);
-            border-color: #cbd5e1;
-        }
-
-        .form-control,
-        .form-select {
-            border-radius: 10px;
-            padding: 0.6rem 1rem;
-        }
-
-        .modal-content {
-            border-radius: 20px;
-            border: none;
-        }
-    </style>
-</head>
-
-<body>
-    <?php
+<?php
     // Cek apakah user adalah admin
     $isAdmin = (session()->get('role') === 'admin' || session()->get('username') === 'admin');
     ?>
@@ -262,51 +211,4 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-
-    <script>
-        const NODE_API_URL = "http://202.10.34.128:3001/api/bot-status";
-
-        function checkBotStatus() {
-            fetch(NODE_API_URL)
-                .then(res => res.json())
-                .then(data => {
-                    const wrapper = document.getElementById('qrCodeWrapper');
-                    if (data.status === "Waiting for Scan") {
-                        wrapper.innerHTML = `<canvas id="qrCanvas"></canvas><p class="text-warning mt-2 fw-semibold">Harap Scan QR Code</p>`;
-                        QRCode.toCanvas(document.getElementById('qrCanvas'), data.qr, {
-                            width: 200,
-                            margin: 2,
-                            color: {
-                                dark: '#0f172a',
-                                light: '#ffffff'
-                            }
-                        });
-                    } else if (data.status === "Connected") {
-                        wrapper.innerHTML = `<div class="text-success py-3"><i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i><h5 class="mt-3 fw-bold">Bot Terhubung & Aktif</h5></div>`;
-                    } else {
-                        wrapper.innerHTML = `<p class="text-danger fw-semibold"><i class="bi bi-arrow-repeat spin"></i> Bot Terputus / Loading...</p>`;
-                    }
-                })
-                .catch(() => {
-                    document.getElementById('qrCodeWrapper').innerHTML = `<p class="text-danger py-3"><i class="bi bi-x-circle fs-1 mb-2 d-block"></i>Gagal konek ke Server Bot (Node.js)</p>`;
-                });
-        }
-
-        setInterval(checkBotStatus, 3000);
-        checkBotStatus();
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const alerts = document.querySelectorAll('.alert-dismissible');
-            alerts.forEach(function(alertNode) {
-                setTimeout(function() {
-                    const alert = new bootstrap.Alert(alertNode);
-                    alert.close();
-                }, 3000);
-            });
-        });
-    </script>
-</body>
-
-</html>
+<?= $this->include('layouts/adminlte_footer') ?>

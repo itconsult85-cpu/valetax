@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <title>Dashboard Bot Settings</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+<?= $this->include('layouts/adminlte_header', [
+    'title' => 'Dashboard Bot Settings',
+    'heading' => 'Dashboard Bot Settings',
+    'activeMenu' => '',
+]) ?>
+
 <div class="container mt-5">
     <div class="card shadow-sm max-w-md mx-auto">
         <div class="card-header bg-primary text-white">
@@ -33,5 +32,5 @@
         </div>
     </div>
 </div>
-</body>
-</html>
+
+<?= $this->include('layouts/adminlte_footer') ?>

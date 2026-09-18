@@ -1,62 +1,10 @@
-<!DOCTYPE html>
-<html lang="id">
+<?= $this->include('layouts/adminlte_header', [
+    'title' => 'Auto-Respon & Konfigurasi Pintar - CIrcle Republic Trader',
+    'heading' => 'Auto-Respon & Konfigurasi Pintar - CIrcle Republic Trader',
+    'activeMenu' => '',
+]) ?>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Auto-Respon & Konfigurasi Pintar - CIrcle Republic Trader</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <style>
-        body {
-            background: #f8fafc;
-            font-family: 'Inter', system-ui, sans-serif;
-            color: #0f172a;
-        }
-
-        .nav-link {
-            color: #64748b;
-        }
-
-        .nav-link.active {
-            color: #0d6efd !important;
-            font-weight: 600;
-        }
-
-        .data-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            background: #ffffff;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .data-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.04);
-        }
-
-        .form-control,
-        .form-select {
-            border-radius: 10px;
-            padding: 0.6rem 1rem;
-        }
-
-        .modal-content {
-            border-radius: 20px;
-            border: none;
-        }
-
-        .config-panel {
-            background: #f0fdfa;
-            border: 1px solid #ccfbf1;
-            border-radius: 16px;
-        }
-    </style>
-</head>
-
-<body>
-
-    <nav class="navbar navbar-expand-lg navbar-white bg-white border-bottom py-3">
+<nav class="navbar navbar-expand-lg navbar-white bg-white border-bottom py-3">
         <div class="container">
             <a class="navbar-brand text-primary fw-bold" href="#"><i class="bi bi-robot me-2"></i>Circle Republic Trader BOT</a>
             <div class="d-flex align-items-center gap-3">
@@ -263,34 +211,4 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.querySelectorAll('.btn-edit').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.getElementById('modalTitle').innerText = 'Edit Aturan';
-                document.getElementById('faq_id').value = this.getAttribute('data-id');
-                document.getElementById('faq_keywords').value = this.getAttribute('data-key');
-                document.getElementById('faq_reply').value = this.getAttribute('data-reply');
-                document.getElementById('faq_action').value = this.getAttribute('data-action') || 'reply_only';
-            });
-        });
-        document.querySelector('.btn-tambah').addEventListener('click', function() {
-            document.getElementById('modalTitle').innerText = 'Tambah Aturan Baru';
-            document.getElementById('faq_id').value = '';
-            document.getElementById('faq_keywords').value = '';
-            document.getElementById('faq_reply').value = '';
-            document.getElementById('faq_action').value = 'reply_only';
-        });
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const alerts = document.querySelectorAll('.alert-dismissible');
-            alerts.forEach(function(alertNode) {
-                setTimeout(function() {
-                    new bootstrap.Alert(alertNode).close();
-                }, 3000);
-            });
-        });
-    </script>
-</body>
-
-</html>
+<?= $this->include('layouts/adminlte_footer') ?>

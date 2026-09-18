@@ -1,62 +1,10 @@
-<!DOCTYPE html>
-<html lang="id">
+<?= $this->include('layouts/adminlte_header', [
+    'title' => 'Pengaturan Bot - Circle Republic Trader',
+    'heading' => 'Pengaturan Bot - Circle Republic Trader',
+    'activeMenu' => '',
+]) ?>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Pengaturan Bot - Circle Republic Trader</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <style>
-        body {
-            background: #f8fafc;
-            font-family: 'Inter', system-ui, sans-serif;
-            color: #0f172a;
-        }
-
-        .nav-link {
-            color: #64748b;
-        }
-
-        .nav-link.active {
-            color: #0d6efd !important;
-            font-weight: 600;
-        }
-
-        .metric-card,
-        .data-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            background: #ffffff;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .metric-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.04);
-        }
-
-        .data-card:hover {
-            transform: translateX(4px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.03);
-            border-color: #cbd5e1;
-        }
-
-        .form-control,
-        .form-select {
-            border-radius: 10px;
-            padding: 0.6rem 1rem;
-        }
-
-        .modal-content {
-            border-radius: 20px;
-            border: none;
-        }
-    </style>
-</head>
-
-<body>
-    <nav class="navbar navbar-expand-lg navbar-white bg-white border-bottom py-3">
+<nav class="navbar navbar-expand-lg navbar-white bg-white border-bottom py-3">
         <div class="container">
             <a class="navbar-brand text-primary fw-bold" href="#"><i class="bi bi-robot me-2"></i>Circle Republic Trader BOT</a>
 
@@ -329,89 +277,4 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.querySelectorAll('.btn-edit-state').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.getElementById('modalStateTitle').innerText = 'Edit Tahap: ' + this.getAttribute('data-name');
-                document.getElementById('state_id').value = this.getAttribute('data-id');
-                document.getElementById('state_level').value = this.getAttribute('data-level');
-                document.getElementById('state_name').value = this.getAttribute('data-name');
-                document.getElementById('state_keywords').value = this.getAttribute('data-keywords');
-                document.getElementById('state_reply').value = this.getAttribute('data-reply');
-                document.getElementById('state_fallback').value = this.getAttribute('data-fallback');
-
-                const previewDiv = document.getElementById('media-preview');
-                previewDiv.innerHTML = '';
-                document.getElementById('preview-container').classList.add('d-none');
-
-                const vid = this.getAttribute('data-video');
-                const img = this.getAttribute('data-image');
-
-                if (vid || img) {
-                    document.getElementById('preview-container').classList.remove('d-none');
-                    if (vid) previewDiv.innerHTML += `<video src="${vid}" width="100"></video>`;
-                    if (img) previewDiv.innerHTML += `<img src="${img}" width="100">`;
-                }
-            });
-        });
-
-        document.querySelector('.btn-success').addEventListener('click', function() {
-            document.getElementById('modalStateTitle').innerText = 'Tambah Tahap Baru';
-            document.getElementById('state_id').value = '';
-            document.getElementById('state_level').value = '';
-            document.getElementById('state_name').value = '';
-            document.getElementById('state_keywords').value = '';
-            document.getElementById('state_reply').value = '';
-            document.getElementById('state_fallback').value = '';
-            document.getElementById('media-preview').innerHTML = '';
-            document.getElementById('preview-container').classList.add('d-none');
-        });
-
-        function previewMedia(input, type) {
-            const previewContainer = document.getElementById('preview-container');
-            const previewDiv = document.getElementById('media-preview');
-
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                previewContainer.classList.remove('d-none');
-
-                reader.onload = function(e) {
-                    previewDiv.innerHTML = '';
-
-                    if (type === 'video') {
-                        previewDiv.innerHTML += `<div class="border p-1"><video src="${e.target.result}" width="80" height="60"></video><br><small>Video Baru</small></div>`;
-                    } else {
-                        previewDiv.innerHTML += `<div class="border p-1"><img src="${e.target.result}" width="80" height="60" class="object-fit-cover"><br><small>Gambar Baru</small></div>`;
-                    }
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-    </script>
-
-    <script>
-        const modalKonfirmasi = document.getElementById('modalKonfirmasi');
-        modalKonfirmasi.addEventListener('show.bs.modal', function(event) {
-            const button = event.relatedTarget;
-            const urlHapus = button.getAttribute('data-url');
-            const btnConfirm = document.getElementById('btnHapusConfirm');
-            btnConfirm.setAttribute('href', urlHapus);
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const alerts = document.querySelectorAll('.alert-dismissible');
-
-            alerts.forEach(function(alertNode) {
-                setTimeout(function() {
-                    const alert = new bootstrap.Alert(alertNode);
-                    alert.close();
-                }, 3000);
-            });
-        });
-    </script>
-</body>
-
-</html>
+<?= $this->include('layouts/adminlte_footer') ?>
