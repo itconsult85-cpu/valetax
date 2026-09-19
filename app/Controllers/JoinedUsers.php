@@ -20,16 +20,6 @@ class JoinedUsers extends BaseController
     {
         $request = $this->request;
         $model = new UserProgressModel();
-
-        if ($request->getGet('all') === '1') {
-            $rows = $model->getJoinedUsers();
-            return $this->response->setJSON([
-                'recordsTotal' => count($rows),
-                'recordsFiltered' => count($rows),
-                'data' => $rows,
-            ]);
-        }
-
         $columns = ['id', 'user_name', 'phone_number', 'current_step', 'screenshots_sent', 'started_at', 'completed_at', 'admin_sent_at', 'last_active'];
         $orderIndex = (int) ($request->getGet('order')[0]['column'] ?? 6);
         $orderColumn = $columns[$orderIndex] ?? 'completed_at';
