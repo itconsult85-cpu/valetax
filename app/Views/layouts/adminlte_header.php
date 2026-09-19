@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.7/css/responsive.bootstrap5.min.css">
     <link rel="stylesheet" href="<?= base_url('assets/css/adminlte-custom.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/css/legacy-pages.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-data.css?v=20260919-3') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-data.css?v=20260919-2') ?>">
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
 <div class="app-wrapper">

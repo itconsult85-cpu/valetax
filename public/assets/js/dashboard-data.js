@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         };
 
-        const loadFallbackRows = () => fetch(`${ajaxUrl}?draw=1&start=0&length=5000&order[0][column]=7&order[0][dir]=desc`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        const loadFallbackRows = () => fetch(`${ajaxUrl}?draw=1&start=0&length=100&order[0][column]=7&order[0][dir]=desc`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); })
             .then(json => renderFallbackRows(Array.isArray(json.data) ? json.data : []))
             .catch(error => { console.error('Gagal memuat data anggota:', error); renderFallbackRows([]); });
@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', function () {
             try {
                 new DataTable(table, {
                     processing: true,
-                    serverSide: false,
+                    serverSide: true,
                     deferRender: true,
                     responsive: { details: { type: 'column', target: 0 } },
                     ajax: {
-                        url: `${ajaxUrl}?draw=1&start=0&length=5000&order[0][column]=7&order[0][dir]=desc`,
+                        url: ajaxUrl,
                         dataSrc: function (json) { return Array.isArray(json.data) ? json.data : []; },
                         error: function (xhr) {
                             const message = xhr.responseJSON?.messages?.error || 'Gagal memuat data dari server.';
@@ -51,16 +51,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     order: [[7, 'desc']],
                     columnDefs: [{ targets: 0, className: 'control', orderable: false, searchable: false, data: null, defaultContent: '' }],
                     columns: [
-                        { data: null, responsivePriority: 1 },
-                        { data: 'id', className: 'text-muted', responsivePriority: 2 },
-                        { data: 'user_name', responsivePriority: 1, render: (data, type, row) => `<strong>${escapeHtml(data || 'Tanpa nama')}</strong><small class="d-block text-secondary">${escapeHtml(row.user_id || '-')}</small>` },
-                        { data: 'phone_number', responsivePriority: 2, render: data => escapeHtml(data || '-') },
-                        { data: 'current_step', responsivePriority: 3, render: data => `<span class="badge text-bg-success"><i class="bi bi-check2 me-1"></i>${Number(data || 0)}</span>` },
-                        { data: 'screenshots_sent', responsivePriority: 4, render: data => `${Number(data || 0)}/2` },
-                        { data: 'started_at', responsivePriority: 6, render: data => escapeHtml(data || '-') },
-                        { data: 'completed_at', responsivePriority: 5, render: data => escapeHtml(data || '-') },
-                        { data: 'admin_sent_at', responsivePriority: 7, render: data => escapeHtml(data || 'Belum ada tracking') },
-                        { data: 'last_active', responsivePriority: 8, render: data => escapeHtml(data || '-') }
+                        { data: null },
+                        { data: 'id', className: 'text-muted' },
+                        { data: 'user_name', render: (data, type, row) => `<strong>${escapeHtml(data || 'Tanpa nama')}</strong><small class="d-block text-secondary">${escapeHtml(row.user_id || '-')}</small>` },
+                        { data: 'phone_number', render: data => escapeHtml(data || '-') },
+                        { data: 'current_step', render: data => `<span class="badge text-bg-success"><i class="bi bi-check2 me-1"></i>${Number(data || 0)}</span>` },
+                        { data: 'screenshots_sent', render: data => `${Number(data || 0)}/2` },
+                        { data: 'started_at', render: data => escapeHtml(data || '-') },
+                        { data: 'completed_at', render: data => escapeHtml(data || '-') },
+                        { data: 'admin_sent_at', render: data => escapeHtml(data || 'Belum ada tracking') },
+                        { data: 'last_active', render: data => escapeHtml(data || '-') }
                     ],
                     language: { search: 'Cari:', searchPlaceholder: 'Nama atau nomor...', lengthMenu: 'Tampilkan _MENU_ data', info: 'Menampilkan _START_–_END_ dari _TOTAL_ data', infoEmpty: 'Belum ada data', emptyTable: 'Belum ada anggota yang selesai bergabung', zeroRecords: 'Data tidak ditemukan', processing: 'Memuat data...', paginate: { first: 'Awal', last: 'Akhir', next: 'Berikutnya', previous: 'Sebelumnya' } },
                     createdRow: function (row, data) { row.dataset.detail = formatDetail(data); }
