@@ -1,77 +1,58 @@
 document.addEventListener('DOMContentLoaded', function () {
     const tableWrapper = document.getElementById('joined-users-table-wrapper');
     const table = document.getElementById('joined-users-table');
-
-    if (tableWrapper && table) {
+    if (tableWrapper && table && window.DataTable) {
         const formatDetail = (row) => `<div class="joined-detail"><div><strong>ID Telegram</strong><span>${escapeHtml(row.user_id || '-')}</span></div><div><strong>Mulai daftar</strong><span>${escapeHtml(row.started_at || '-')}</span></div><div><strong>Selesai daftar</strong><span>${escapeHtml(row.completed_at || '-')}</span></div><div><strong>Dikirim admin</strong><span>${escapeHtml(row.admin_sent_at || 'Belum ada tracking')}</span></div><div><strong>Aktif terakhir</strong><span>${escapeHtml(row.last_active || '-')}</span></div></div>`;
-        const ajaxUrl = tableWrapper.dataset.url;
-
-        const renderFallbackRows = (rows) => {
-            const tbody = table.tBodies[0] || table.createTBody();
-            tbody.innerHTML = '';
-            if (!rows.length) {
-                tbody.innerHTML = '<tr><td colspan="10" class="text-center text-secondary py-4">Belum ada anggota yang selesai bergabung</td></tr>';
-                return;
+        const dt = new DataTable(table, {
+            processing: true,
+            serverSide: true,
+            deferRender: true,
+            responsive: { details: { type: 'column', target: 0 } },
+            ajax: {
+                url: tableWrapper.dataset.url,
+                dataSrc: function (json) { return Array.isArray(json.data) ? json.data : []; },
+                error: function (xhr) {
+                    const message = xhr.responseJSON?.messages?.error || 'Gagal memuat data dari server.';
+                    tableWrapper.querySelector('.datatable-error')?.remove();
+                    const alert = document.createElement('div');
+                    alert.className = 'datatable-error alert alert-danger mx-3 mb-3';
+                    alert.textContent = message;
+                    tableWrapper.querySelector('.card-body').prepend(alert);
+                }
+            },
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+            order: [[7, 'desc']],
+            columnDefs: [{ targets: 0, className: 'control', orderable: false, searchable: false, data: null, defaultContent: '' }],
+            columns: [
+                { data: null },
+                { data: 'id', className: 'text-muted' },
+                { data: 'user_name', render: (data, type, row) => `<strong>${escapeHtml(data || 'Tanpa nama')}</strong><small class="d-block text-secondary">${escapeHtml(row.user_id || '-')}</small>` },
+                { data: 'phone_number', render: data => escapeHtml(data || '-') },
+                { data: 'current_step', render: data => `<span class="badge text-bg-success"><i class="bi bi-check2 me-1"></i>${Number(data || 0)}</span>` },
+                { data: 'screenshots_sent', render: data => `${Number(data || 0)}/2` },
+                { data: 'started_at', render: data => escapeHtml(data || '-') },
+                { data: 'completed_at', render: data => escapeHtml(data || '-') },
+                { data: 'admin_sent_at', render: data => escapeHtml(data || 'Belum ada tracking') },
+                { data: 'last_active', render: data => escapeHtml(data || '-') }
+            ],
+            language: { search: 'Cari:', searchPlaceholder: 'Nama atau nomor...', lengthMenu: 'Tampilkan _MENU_ data', info: 'Menampilkan _START_–_END_ dari _TOTAL_ data', infoEmpty: 'Belum ada data', emptyTable: 'Belum ada anggota yang selesai bergabung', zeroRecords: 'Data tidak ditemukan', processing: 'Memuat data...', paginate: { first: 'Awal', last: 'Akhir', next: 'Berikutnya', previous: 'Sebelumnya' } },
+            createdRow: function (row, data) { row.dataset.detail = formatDetail(data); }
+        });
+        table.addEventListener('click', function (event) {
+            const tr = event.target.closest('tbody tr');
+            if (!tr || event.target.closest('td.control')) return;
+            if (tr.classList.contains('child')) return;
+        });
+        document.addEventListener('click', function (event) {
+            const control = event.target.closest('td.control');
+            if (!control) return;
+            const tr = control.closest('tr');
+            if (tr && tr.dataset.detail) {
+                const child = tr.nextElementSibling;
+                if (!child || !child.classList.contains('child')) return;
             }
-            rows.forEach((row, index) => {
-                const tr = document.createElement('tr');
-                const values = [index + 1, row.user_name || 'Tanpa nama', row.phone_number || '-', Number(row.current_step || 0), `${Number(row.screenshots_sent || 0)}/2`, row.started_at || '-', row.completed_at || '-', row.admin_sent_at || 'Belum ada tracking', row.last_active || '-'];
-                tr.innerHTML = '<td></td>' + values.map((value, column) => `<td>${column === 1 ? `<strong>${escapeHtml(value)}</strong><small class="d-block text-secondary">${escapeHtml(row.user_id || '-')}</small>` : escapeHtml(value)}</td>`).join('');
-                tr.dataset.detail = formatDetail(row);
-                tbody.appendChild(tr);
-            });
-        };
-
-        const loadFallbackRows = () => fetch(`${ajaxUrl}?draw=1&start=0&length=100&order[0][column]=7&order[0][dir]=desc`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); })
-            .then(json => renderFallbackRows(Array.isArray(json.data) ? json.data : []))
-            .catch(error => { console.error('Gagal memuat data anggota:', error); renderFallbackRows([]); });
-
-        if (typeof DataTable === 'function') {
-            try {
-                new DataTable(table, {
-                    processing: true,
-                    serverSide: true,
-                    deferRender: true,
-                    responsive: { details: { type: 'column', target: 0 } },
-                    ajax: {
-                        url: ajaxUrl,
-                        dataSrc: function (json) { return Array.isArray(json.data) ? json.data : []; },
-                        error: function (xhr) {
-                            const message = xhr.responseJSON?.messages?.error || 'Gagal memuat data dari server.';
-                            tableWrapper.querySelector('.datatable-error')?.remove();
-                            const alert = document.createElement('div');
-                            alert.className = 'datatable-error alert alert-danger mx-3 mb-3';
-                            alert.textContent = message;
-                            tableWrapper.querySelector('.card-body').prepend(alert);
-                        }
-                    },
-                    pageLength: 10,
-                    lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
-                    order: [[7, 'desc']],
-                    columnDefs: [{ targets: 0, className: 'control', orderable: false, searchable: false, data: null, defaultContent: '' }],
-                    columns: [
-                        { data: null },
-                        { data: 'id', className: 'text-muted' },
-                        { data: 'user_name', render: (data, type, row) => `<strong>${escapeHtml(data || 'Tanpa nama')}</strong><small class="d-block text-secondary">${escapeHtml(row.user_id || '-')}</small>` },
-                        { data: 'phone_number', render: data => escapeHtml(data || '-') },
-                        { data: 'current_step', render: data => `<span class="badge text-bg-success"><i class="bi bi-check2 me-1"></i>${Number(data || 0)}</span>` },
-                        { data: 'screenshots_sent', render: data => `${Number(data || 0)}/2` },
-                        { data: 'started_at', render: data => escapeHtml(data || '-') },
-                        { data: 'completed_at', render: data => escapeHtml(data || '-') },
-                        { data: 'admin_sent_at', render: data => escapeHtml(data || 'Belum ada tracking') },
-                        { data: 'last_active', render: data => escapeHtml(data || '-') }
-                    ],
-                    language: { search: 'Cari:', searchPlaceholder: 'Nama atau nomor...', lengthMenu: 'Tampilkan _MENU_ data', info: 'Menampilkan _START_–_END_ dari _TOTAL_ data', infoEmpty: 'Belum ada data', emptyTable: 'Belum ada anggota yang selesai bergabung', zeroRecords: 'Data tidak ditemukan', processing: 'Memuat data...', paginate: { first: 'Awal', last: 'Akhir', next: 'Berikutnya', previous: 'Sebelumnya' } },
-                    createdRow: function (row, data) { row.dataset.detail = formatDetail(data); }
-                });
-            } catch (error) {
-                console.error('DataTable gagal diinisialisasi:', error);
-                loadFallbackRows();
-            }
-        } else {
-            loadFallbackRows();
-        }
+        });
     }
 
     const chatPage = document.getElementById('chat-history-page');
@@ -108,22 +89,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const statusBox = document.getElementById('telegram-bot-status');
     if (statusBox) {
         const url = statusBox.dataset.url;
-        const check = () => fetch(`${url}?_=${Date.now()}`, { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }, cache: 'no-store' })
-            .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); })
-            .then(data => {
-                const active = data.active === true || data.status === 'Connected' || data.status === 'online' || String(data.status || '').toLowerCase().includes('connected');
-                statusBox.innerHTML = `<div class="status-indicator ${active ? 'online' : 'offline'}"><i class="bi ${active ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}"></i><div><strong>${active ? 'Bot Telegram Aktif' : 'Bot Telegram Tidak Aktif'}</strong><small class="d-block text-secondary">PM2: ${escapeHtml(data.pm2_status || data.status || 'unknown')}</small></div></div><div class="small text-secondary mt-3">Process: <code>${escapeHtml(data.process_name || 'bot_tele_valetax')}</code></div>`;
-            }).catch(error => {
-                console.error('Gagal membaca status bot:', error);
-                statusBox.innerHTML = '<div class="status-indicator offline"><i class="bi bi-x-circle-fill"></i><div><strong>Status tidak dapat dibaca</strong><small class="d-block text-secondary">Endpoint status bot tidak merespons</small></div></div>';
-            });
-        check();
-        setInterval(check, 10000);
+        const check = () => fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } }).then(r => r.json()).then(data => {
+            const active = data.active === true || data.status === 'Connected' || data.status === 'online' || String(data.status || '').toLowerCase().includes('connected');
+            statusBox.innerHTML = `<div class="status-indicator ${active ? 'online' : 'offline'}"><i class="bi ${active ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}"></i><div><strong>${active ? 'Bot Telegram Aktif' : 'Bot Telegram Tidak Aktif'}</strong><small class="d-block text-secondary">PM2: ${escapeHtml(data.pm2_status || data.status || 'unknown')}</small></div></div><div class="small text-secondary mt-3">Process: <code>${escapeHtml(data.process_name || 'bot_tele_valetax')}</code></div>`;
+        }).catch(() => { statusBox.innerHTML = '<div class="status-indicator offline"><i class="bi bi-x-circle-fill"></i><div><strong>Status tidak dapat dibaca</strong><small class="d-block text-secondary">Server bot tidak merespons</small></div></div>'; });
+        check(); setInterval(check, 10000);
     }
 });
 
-function escapeHtml(value) {
-    const div = document.createElement('div');
-    div.textContent = value == null ? '' : String(value);
-    return div.innerHTML;
-}
+function escapeHtml(value) { const div = document.createElement('div'); div.textContent = value == null ? '' : String(value); return div.innerHTML; }

@@ -10,7 +10,7 @@
 <script src="https://cdn.datatables.net/responsive/3.0.7/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.7/js/responsive.bootstrap5.min.js"></script>
 <script src="<?= base_url('assets/js/adminlte-app.js') ?>"></script>
-    <script src="<?= base_url('assets/js/dashboard-data.js?v=20260919-2') ?>"></script>
+<script src="<?= base_url('assets/js/dashboard-data.js') ?>"></script>
 <script src="<?= base_url('assets/js/legacy-pages.js') ?>"></script>
 </body>
 </html>
