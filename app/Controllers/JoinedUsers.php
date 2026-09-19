@@ -25,7 +25,10 @@ class JoinedUsers extends BaseController
         $orderColumn = $columns[$orderIndex] ?? 'completed_at';
         $orderDir = strtolower((string) ($request->getGet('order')[0]['dir'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
         $start = max(0, (int) ($request->getGet('start') ?? 0));
-        $length = min(100, max(10, (int) ($request->getGet('length') ?? 10)));
+        $requestedLength = (int) ($request->getGet('length') ?? 10);
+        // Client-side DataTable meminta seluruh dataset satu kali, lalu
+        // menangani search, sorting, dan pagination di browser.
+        $length = $requestedLength <= 0 ? 5000 : min(5000, max(10, $requestedLength));
         $search = trim((string) ($request->getGet('search')['value'] ?? ''));
 
         return $this->response->setJSON([
