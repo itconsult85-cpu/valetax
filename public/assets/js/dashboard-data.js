@@ -22,30 +22,17 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         };
 
-        const loadFallbackRows = () => fetch(`${ajaxUrl}?draw=1&start=0&length=5000&order[0][column]=7&order[0][dir]=desc`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); })
-            .then(json => renderFallbackRows(Array.isArray(json.data) ? json.data : []))
-            .catch(error => { console.error('Gagal memuat data anggota:', error); renderFallbackRows([]); });
+        const loadAllRows = () => fetch(`${ajaxUrl}?all=1&_=${Date.now()}`, { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }, cache: 'no-store' })
+            .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); });
 
-        if (typeof DataTable === 'function') {
-            try {
-                new DataTable(table, {
-                    processing: true,
-                    serverSide: false,
-                    deferRender: true,
+        const initialiseTable = (rows) => {
+            if (typeof DataTable !== 'function') {
+                renderFallbackRows(rows);
+                return;
+            }
+            new DataTable(table, {
+                    data: rows,
                     responsive: { details: { type: 'column', target: 0 } },
-                    ajax: {
-                        url: `${ajaxUrl}?draw=1&start=0&length=5000&order[0][column]=7&order[0][dir]=desc`,
-                        dataSrc: function (json) { return Array.isArray(json.data) ? json.data : []; },
-                        error: function (xhr) {
-                            const message = xhr.responseJSON?.messages?.error || 'Gagal memuat data dari server.';
-                            tableWrapper.querySelector('.datatable-error')?.remove();
-                            const alert = document.createElement('div');
-                            alert.className = 'datatable-error alert alert-danger mx-3 mb-3';
-                            alert.textContent = message;
-                            tableWrapper.querySelector('.card-body').prepend(alert);
-                        }
-                    },
                     pageLength: 10,
                     lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
                     order: [[7, 'desc']],
@@ -65,13 +52,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     language: { search: 'Cari:', searchPlaceholder: 'Nama atau nomor...', lengthMenu: 'Tampilkan _MENU_ data', info: 'Menampilkan _START_–_END_ dari _TOTAL_ data', infoEmpty: 'Belum ada data', emptyTable: 'Belum ada anggota yang selesai bergabung', zeroRecords: 'Data tidak ditemukan', processing: 'Memuat data...', paginate: { first: 'Awal', last: 'Akhir', next: 'Berikutnya', previous: 'Sebelumnya' } },
                     createdRow: function (row, data) { row.dataset.detail = formatDetail(data); }
                 });
-            } catch (error) {
-                console.error('DataTable gagal diinisialisasi:', error);
-                loadFallbackRows();
-            }
-        } else {
-            loadFallbackRows();
-        }
+        };
+
+        loadAllRows()
+            .then(json => initialiseTable(Array.isArray(json.data) ? json.data : []))
+            .catch(error => { console.error('Gagal memuat seluruh data anggota:', error); renderFallbackRows([]); });
     }
 
     const chatPage = document.getElementById('chat-history-page');
