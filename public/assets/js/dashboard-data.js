@@ -26,11 +26,13 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); });
 
         const initialiseTable = (rows) => {
-            if (typeof DataTable !== 'function') {
+            const DataTableCtor = window.DataTable;
+            if (typeof DataTableCtor !== 'function') {
                 renderFallbackRows(rows);
                 return;
             }
-            new DataTable(table, {
+            try {
+                new DataTableCtor(table, {
                     data: rows,
                     responsive: { details: { type: 'column', target: 0 } },
                     pageLength: 10,
@@ -52,11 +54,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     language: { search: 'Cari:', searchPlaceholder: 'Nama atau nomor...', lengthMenu: 'Tampilkan _MENU_ data', info: 'Menampilkan _START_–_END_ dari _TOTAL_ data', infoEmpty: 'Belum ada data', emptyTable: 'Belum ada anggota yang selesai bergabung', zeroRecords: 'Data tidak ditemukan', processing: 'Memuat data...', paginate: { first: 'Awal', last: 'Akhir', next: 'Berikutnya', previous: 'Sebelumnya' } },
                     createdRow: function (row, data) { row.dataset.detail = formatDetail(data); }
                 });
+            } catch (error) {
+                console.error('DataTable gagal diinisialisasi, data tetap ditampilkan:', error);
+                renderFallbackRows(rows);
+            }
         };
 
         loadAllRows()
             .then(json => initialiseTable(Array.isArray(json.data) ? json.data : []))
-            .catch(error => { console.error('Gagal memuat seluruh data anggota:', error); renderFallbackRows([]); });
+            .catch(error => {
+                console.error('Gagal memuat seluruh data anggota:', error);
+                tableWrapper.querySelector('.datatable-error')?.remove();
+                const alert = document.createElement('div');
+                alert.className = 'datatable-error alert alert-danger mb-3';
+                alert.textContent = 'Data gagal dimuat dari endpoint JoinedUsers/data?all=1.';
+                tableWrapper.querySelector('.card-body').prepend(alert);
+            });
     }
 
     const chatPage = document.getElementById('chat-history-page');
