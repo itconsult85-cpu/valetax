@@ -6,15 +6,27 @@ document.addEventListener('DOMContentLoaded', function () {
         const dt = new DataTable(table, {
             processing: true,
             serverSide: true,
+            deferRender: true,
             responsive: { details: { type: 'column', target: 0 } },
-            ajax: { url: tableWrapper.dataset.url, dataSrc: 'data' },
+            ajax: {
+                url: tableWrapper.dataset.url,
+                dataSrc: function (json) { return Array.isArray(json.data) ? json.data : []; },
+                error: function (xhr) {
+                    const message = xhr.responseJSON?.messages?.error || 'Gagal memuat data dari server.';
+                    tableWrapper.querySelector('.datatable-error')?.remove();
+                    const alert = document.createElement('div');
+                    alert.className = 'datatable-error alert alert-danger mx-3 mb-3';
+                    alert.textContent = message;
+                    tableWrapper.querySelector('.card-body').prepend(alert);
+                }
+            },
             pageLength: 10,
             lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
             order: [[7, 'desc']],
             columnDefs: [{ targets: 0, className: 'control', orderable: false, searchable: false, data: null, defaultContent: '' }],
             columns: [
                 { data: null },
-                { data: 'id' },
+                { data: 'id', className: 'text-muted' },
                 { data: 'user_name', render: (data, type, row) => `<strong>${escapeHtml(data || 'Tanpa nama')}</strong><small class="d-block text-secondary">${escapeHtml(row.user_id || '-')}</small>` },
                 { data: 'phone_number', render: data => escapeHtml(data || '-') },
                 { data: 'current_step', render: data => `<span class="badge text-bg-success"><i class="bi bi-check2 me-1"></i>${Number(data || 0)}</span>` },
@@ -24,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 { data: 'admin_sent_at', render: data => escapeHtml(data || 'Belum ada tracking') },
                 { data: 'last_active', render: data => escapeHtml(data || '-') }
             ],
-            language: { search: 'Cari:', lengthMenu: 'Tampilkan _MENU_ data', info: 'Menampilkan _START_–_END_ dari _TOTAL_ data', infoEmpty: 'Belum ada data', zeroRecords: 'Data tidak ditemukan', processing: 'Memuat data...', paginate: { first: 'Awal', last: 'Akhir', next: 'Berikutnya', previous: 'Sebelumnya' } },
+            language: { search: 'Cari:', searchPlaceholder: 'Nama atau nomor...', lengthMenu: 'Tampilkan _MENU_ data', info: 'Menampilkan _START_–_END_ dari _TOTAL_ data', infoEmpty: 'Belum ada data', emptyTable: 'Belum ada anggota yang selesai bergabung', zeroRecords: 'Data tidak ditemukan', processing: 'Memuat data...', paginate: { first: 'Awal', last: 'Akhir', next: 'Berikutnya', previous: 'Sebelumnya' } },
             createdRow: function (row, data) { row.dataset.detail = formatDetail(data); }
         });
         table.addEventListener('click', function (event) {

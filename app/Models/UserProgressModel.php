@@ -6,8 +6,6 @@ use CodeIgniter\Model;
 
 class UserProgressModel extends Model
 {
-    private ?bool $hasAdminDeliveryColumns = null;
-
     protected $table      = 'user_progress';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
@@ -35,10 +33,6 @@ class UserProgressModel extends Model
     public function getJoinedUsers(): array
     {
         $builder = $this->joinedBuilder();
-
-        if ($this->hasAdminDeliveryColumns()) {
-            $builder->where('admin_sent_at IS NOT NULL', null, false);
-        }
 
         return $builder
             ->orderBy('completed_at', 'DESC')
@@ -68,9 +62,6 @@ class UserProgressModel extends Model
         $builder = $this->db->table($this->table)
             ->where('completed_at IS NOT NULL', null, false)
             ->where('screenshots_sent >=', 1);
-        if ($this->hasAdminDeliveryColumns()) {
-            $builder->where('admin_sent_at IS NOT NULL', null, false);
-        }
         return $builder;
     }
 
@@ -91,21 +82,6 @@ class UserProgressModel extends Model
     {
         $builder = $this->joinedBuilder();
         return $builder->countAllResults();
-    }
-
-    private function hasAdminDeliveryColumns(): bool
-    {
-        if ($this->hasAdminDeliveryColumns !== null) {
-            return $this->hasAdminDeliveryColumns;
-        }
-
-        try {
-            $this->hasAdminDeliveryColumns = $this->db->fieldExists('admin_sent_at', $this->table);
-        } catch (\Throwable) {
-            $this->hasAdminDeliveryColumns = false;
-        }
-
-        return $this->hasAdminDeliveryColumns;
     }
 
     /**

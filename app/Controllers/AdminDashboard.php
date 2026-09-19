@@ -81,7 +81,7 @@ class AdminDashboard extends BaseController
 
     public function getBotStatus()
     {
-        $vps_url = "http://202.10.34.128:3001/api/bot-status";
+        $vps_url = getenv('BOT_STATUS_URL') ?: "http://202.10.34.128:3001/api/bot-status";
 
         $ch = curl_init($vps_url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -91,10 +91,19 @@ class AdminDashboard extends BaseController
         curl_close($ch);
 
         if ($httpCode === 200 && $response) {
-            return $this->response->setJSON(json_decode($response));
+            $payload = json_decode($response, true);
+            if (is_array($payload)) {
+                return $this->response->setJSON($payload);
+            }
         }
 
-        return $this->response->setJSON(['status' => 'Disconnected', 'qr' => null]);
+        return $this->response->setJSON([
+            'status' => 'Disconnected',
+            'active' => false,
+            'pm2_status' => 'unreachable',
+            'process_name' => 'bot_tele_valetax',
+            'qr' => null,
+        ]);
     }
 
     public function botControl($action)
