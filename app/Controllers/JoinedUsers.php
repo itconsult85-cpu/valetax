@@ -19,27 +19,24 @@ class JoinedUsers extends BaseController
     public function data()
     {
         $request = $this->request;
-        $model = new UserProgressModel();
+        $model = new \App\Models\UserProgressModel();
 
-        if ((string) $request->getGet('all') === '1') {
-            $rows = $model->getJoinedUsers();
-            return $this->response->setJSON([
-                'recordsTotal' => count($rows),
-                'recordsFiltered' => count($rows),
-                'data' => $rows,
-            ]);
-        }
+        $orderArr = $request->getGet('order');
+        $columnsArr = $request->getGet('columns');
+        $searchArr = $request->getGet('search');
 
-        $columns = ['id', 'user_name', 'phone_number', 'current_step', 'screenshots_sent', 'started_at', 'completed_at', 'admin_sent_at', 'last_active'];
-        $orderIndex = (int) ($request->getGet('order')[0]['column'] ?? 6);
-        $orderColumn = $columns[$orderIndex] ?? 'completed_at';
-        $orderDir = strtolower((string) ($request->getGet('order')[0]['dir'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
+        $orderIndex = isset($orderArr[0]['column']) ? (int) $orderArr[0]['column'] : 7;
+        $orderDir = (isset($orderArr[0]['dir']) && strtolower((string)$orderArr[0]['dir']) === 'asc') ? 'asc' : 'desc';
+
+        $orderColumn = (isset($columnsArr[$orderIndex]['name']) && $columnsArr[$orderIndex]['name'] !== '')
+            ? $columnsArr[$orderIndex]['name']
+            : 'completed_at';
+
         $start = max(0, (int) ($request->getGet('start') ?? 0));
-        $requestedLength = (int) ($request->getGet('length') ?? 10);
-        // Client-side DataTable meminta seluruh dataset satu kali, lalu
-        // menangani search, sorting, dan pagination di browser.
-        $length = $requestedLength <= 0 ? 5000 : min(5000, max(10, $requestedLength));
-        $search = trim((string) ($request->getGet('search')['value'] ?? ''));
+        $length = (int) ($request->getGet('length') ?? 10);
+        $length = $length <= 0 ? 10 : $length;
+
+        $search = isset($searchArr['value']) ? trim((string) $searchArr['value']) : '';
 
         return $this->response->setJSON([
             'draw' => (int) ($request->getGet('draw') ?? 0),
