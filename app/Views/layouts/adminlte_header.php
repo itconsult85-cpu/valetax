@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <title><?= esc($title ?? 'Circle Republic Trader') ?></title>
+<<<<<<< HEAD
 
     <!--begin::Theme Init-->
     <script>
@@ -43,6 +44,15 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
 
     <!-- Kustom CSS (Hanya untuk style di luar layout utama) -->
+=======
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/adminlte4@4.0.0-rc.7.20260519/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.3/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.7/css/responsive.bootstrap5.min.css">
+    <link rel="stylesheet" href="<?= base_url('assets/css/adminlte-custom.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/legacy-pages.css') ?>">
+>>>>>>> d2fdd78c20117783a7c60d84a2f9f1be61d02fa1
     <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-data.css') ?>">
 </head>
 

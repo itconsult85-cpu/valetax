@@ -19,6 +19,7 @@ class JoinedUsers extends BaseController
     public function data()
     {
         $request = $this->request;
+<<<<<<< HEAD
         $model = new \App\Models\UserProgressModel();
 
         $orderArr = $request->getGet('order');
@@ -37,6 +38,16 @@ class JoinedUsers extends BaseController
         $length = $length <= 0 ? 10 : $length;
 
         $search = isset($searchArr['value']) ? trim((string) $searchArr['value']) : '';
+=======
+        $model = new UserProgressModel();
+        $columns = ['id', 'user_name', 'phone_number', 'current_step', 'screenshots_sent', 'started_at', 'completed_at', 'admin_sent_at', 'last_active'];
+        $orderIndex = (int) ($request->getGet('order')[0]['column'] ?? 6);
+        $orderColumn = $columns[$orderIndex] ?? 'completed_at';
+        $orderDir = strtolower((string) ($request->getGet('order')[0]['dir'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
+        $start = max(0, (int) ($request->getGet('start') ?? 0));
+        $length = min(100, max(10, (int) ($request->getGet('length') ?? 10)));
+        $search = trim((string) ($request->getGet('search')['value'] ?? ''));
+>>>>>>> d2fdd78c20117783a7c60d84a2f9f1be61d02fa1
 
         return $this->response->setJSON([
             'draw' => (int) ($request->getGet('draw') ?? 0),
