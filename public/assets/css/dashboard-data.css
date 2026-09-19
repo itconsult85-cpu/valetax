@@ -1,11 +1,6 @@
-#joined-users-table_wrapper .dt-layout-row { margin: .75rem 0; align-items: center; }
+#joined-users-table_wrapper .dt-layout-row { margin: .75rem 0; }
 #joined-users-table_wrapper .dt-search input, #joined-users-table_wrapper .dt-length select { margin-left: .5rem; }
-#joined-users-table_wrapper .dt-info, #joined-users-table_wrapper .dt-length, #joined-users-table_wrapper .dt-search { color: #64748b; font-size: .875rem; }
-#joined-users-table_wrapper .dt-paging .dt-paging-button { border-radius: .375rem; }
-#joined-users-table { margin-top: 0 !important; }
-#joined-users-table th, #joined-users-table td { white-space: nowrap; vertical-align: middle; }
-#joined-users-table thead th { font-size: .75rem; letter-spacing: .03em; text-transform: uppercase; color: #475569; }
-#joined-users-table tbody tr:hover { --bs-table-hover-bg: #f8fafc; }
+#joined-users-table th, #joined-users-table td { white-space: nowrap; }
 #joined-users-table td.control { cursor: pointer; width: 2rem; }
 .joined-detail { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .5rem 1.25rem; padding: .75rem 1rem; background: #f8fafc; border-left: 3px solid #0d6efd; }
 .joined-detail strong, .joined-detail span { display: block; }
@@ -25,5 +20,4 @@
   .chat-container-compact .chat-area { min-width: 0; }
   .chat-container-compact .bubble { max-width: 88%; font-size: .82rem; padding: .6rem .75rem; }
   #joined-users-table_wrapper .dt-layout-row { flex-direction: column; gap: .5rem; }
-  #joined-users-table_wrapper .dt-search input { width: min(100%, 240px); }
 }
