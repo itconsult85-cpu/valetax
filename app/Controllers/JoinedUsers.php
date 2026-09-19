@@ -21,7 +21,7 @@ class JoinedUsers extends BaseController
         $request = $this->request;
         $model = new UserProgressModel();
 
-        if ((string) $request->getGet('all') === '1') {
+        if ($request->getGet('all') === '1') {
             $rows = $model->getJoinedUsers();
             return $this->response->setJSON([
                 'recordsTotal' => count($rows),
